@@ -1,0 +1,5 @@
+x,i:int;
+d:double;
+r:real;
+c:char;
+x=321;

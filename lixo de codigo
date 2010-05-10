@@ -1,0 +1,19 @@
+
+
+/*
+ * [ \n\t]+ { }
+ * ({letra}|"_")({letra}|{digito}|"_")* { printf("%s\n",yytext); return(IDF);}
+ * {digito}+ { VAL_INT = atoi (yytext); return(INT_LIT);};
+ * {digito}+"."{digito}+(("e"|"E")("+"|"-")?{digito}+)? { VAL_DOUBLE = atof (yytext); return(F_LIT);}
+ */
+
+
+
+/*    | comando ';' acoes {
+	$$ = (char *)malloc((strlen($1))*sizeof(char));
+  	strcpy($$, $1);
+  	strcat($$, ";");
+  
+  	printf("Acoes: %s\n", $$);	
+    }
+*/   

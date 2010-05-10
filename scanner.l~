@@ -1,0 +1,98 @@
+ /* Secao das declaracoes */
+
+%option noyywrap
+  /* Sera copiado no .c final */
+%{
+    #include <stdlib.h>
+    #include <string.h>
+   
+    /* este include eh importante... */
+    #include "tokens.h"
+    int VAL_INT;
+    double VAL_DOUBLE;
+    extern YYSTYPE yylval;
+  
+%}
+ 
+  /* Definicoes regulares (A COMPLETAR conforme a especificacao) */
+digito     [0-9]
+letra      ([a-z]|[A-Z])
+
+%%
+
+ /* Secao { $$ = $1; }das Regras de traducao */
+ /* O que consta aqui eh puramente ilustrativo... A COMPLETAR ! 
+  * Ver tambem "tokens.h".
+  */
+
+int    	{ return(INT); }
+double 	{ return(DOUBLE);}
+real   	{ return(REAL);}
+char   	{ return(CHAR);}
+"*"    	{ return('*');}
+"+"    	{ return('+');}
+"-"    	{ return('-');}
+"/"    	{ return('/');}
+","    	{ return(',');}
+";"    	{ return(';');}
+":"    	{ return(':');}
+"'"    	{ return(QUOTE);}
+"\""    { return(DQUOTE);}
+"("    	{ return('(');}
+")"    	{ return(')');}
+"["    	{ return('[');}
+"]"    	{ return(']');}
+"{"    	{ return('{');}
+"}"    	{ return('}');}
+"<="   	{ return(LE) ; }
+">="   	{ return(GE);}
+"=="   	{ return(EQ);}
+"!="   	{ return(NE);}
+"<"    	{ return('<');}
+">"    	{ return('>');}
+"="    	{ return('=');}
+"&"    	{ return(AND);}
+"|"    	{ return(OR);}
+"!"    	{ return(NOT);}
+if     	{ return( IF ); }
+then   	{ return( THEN ); }
+else   	{ return( ELSE ); }
+for    	{ return( FOR ); }
+next   	{ return( NEXT ); }
+while  	{ return( WHILE ); }
+repeat 	{ return( REPEAT ); }
+until  	{ return( UNTIL ); }
+end    	{ return( END ); }
+true   	{ return( TRUE ); }
+false  	{ return( FALSE ); }
+
+
+[ \n\t]+ { }
+
+({letra}|"_")({letra}|{digito}|"_")* { 
+    yylval.cadeia = (char *)malloc(sizeof(char)*(strlen(yytext) + 1));
+    strcpy(yylval.cadeia,yytext);
+    return(IDF);
+}
+
+{digito}+ {
+    yylval.cadeia = (char *)malloc(sizeof(char)*(strlen(yytext) + 1));
+    strcpy(yylval.cadeia,yytext);
+    return( INT_LIT );
+}
+
+{digito}+"."{digito}+(("e"|"E")("+"|"-")?{digito}+)? { 
+    yylval.cadeia = (char *)malloc(sizeof(char)*(strlen(yytext) + 1));
+    strcpy(yylval.cadeia,yytext);
+    return( F_LIT );
+}
+
+
+  /* Tratamento dos erros lexicais: a regra seguinte pega tudo o que nao
+   * fechou com uma Regexp anterior.
+   */
+. { printf("Erro lexical - caractere nao reconhecido: %c.\n", yytext[0]);
+    exit(-1); }
+%%
+ /* Secao dos  Procedimentos auxiliares  */
+
